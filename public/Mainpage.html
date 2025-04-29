@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to SECURO</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* (CSS remains unchanged, same as yours) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #555;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .table-section {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f0f2f5;
+        }
+
+        #add-member-btn {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #add-member-btn:hover {
+            background-color: #45a049;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            padding-top: 100px;
+        }
+
+        .modal-content {
+            background: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .modal-buttons button {
+            padding: 8px 15px;
+            margin-left: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-buttons button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #close-modal {
+            background-color: #f44336;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to SECURO, your Home Protection Robot</h1>
+        <h2>Hello, <span id="user-name">User</span>!</h2>
+        <p>Your registration was successful. Here are your details:</p>
+
+        <div class="table-section">
+            <h2>Your Information</h2>
+            <table id="user-info-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Country</th>
+                        <th>Uploaded Photos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Juan Dela Cruz</td>
+                        <td>09171234567</td>
+                        <td>123 Barangay Street</td>
+                        <td>Philippines</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-section">
+            <h2>Household Members</h2>
+            <button id="add-member-btn">+ Add Member</button>
+            <table id="household-table">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Photos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Household members will be listed here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for adding household member -->
+    <div id="member-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add Household Member</h2>
+            <form id="member-form">
+                <input type="text" id="member-name" placeholder="Full Name" required>
+                <input type="text" id="member-phone" placeholder="Phone Number" required>
+                <input type="text" id="member-address" placeholder="Address" required>
+                <input type="file" id="member-photo" accept="image/*" multiple required>
+                <div class="modal-buttons">
+                    <button type="submit">Add</button>
+                    <button type="button" id="close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("member-modal");
+        const addBtn = document.getElementById("add-member-btn");
+        const closeBtn = document.getElementById("close-modal");
+        const form = document.getElementById("member-form");
+        const householdTable = document.querySelector("#household-table tbody");
+        const phoneInput = document.getElementById("member-phone");
+        const addressInput = document.getElementById("member-address");
+
+        addBtn.addEventListener("click", () => {
+            const useSamePhone = confirm("Do you want to use the same phone number as the main user?");
+            if (useSamePhone) {
+                phoneInput.value = "09171234567"; // Example value
+                phoneInput.disabled = true;
+            } else {
+                phoneInput.value = "";
+                phoneInput.disabled = false;
+            }
+            modal.style.display = "block";
+        });
+
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            form.reset();
+            phoneInput.disabled = false;
+        };
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const name = document.getElementById("member-name").value;
+            const phone = phoneInput.value;
+            const address = addressInput.value;
+            const photoCount = document.getElementById("member-photo").files.length;
+
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${phone}</td>
+                <td>${address}</td>
+                <td>${photoCount}</td>
+            `;
+            householdTable.appendChild(newRow);
+
+            modal.style.display = "none";
+            form.reset();
+            phoneInput.disabled = false;
+        });
+    </script>
+</body>
+</html>

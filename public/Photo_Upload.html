@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Photo Upload</title>
+</head>
+<body>
+    <h1>Photo Upload</h1>
+    <button onclick="capturePhoto()">Capture Photo</button>
+    <div id="photos-container"></div>
+    <button onclick="savePhotos()">Save</button>
+    <button onclick="discardPhotos()">Discard</button>
+    <button onclick="startOver()">Start Over</button>
+
+    <script>
+        function capturePhoto() {
+            // Request camera access and capture photo
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    // Create a video element to display the camera feed
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+
+                    // Capture a photo
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const photo = canvas.toDataURL();
+
+                    // Add the photo to the container
+                    const photoContainer = document.getElementById('photos-container');
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    photoContainer.appendChild(img);
+                })
+                .catch(error => {
+                    console.error('Error capturing photo:', error);
+                });
+        }
+    </script>
+</body>
+</html>

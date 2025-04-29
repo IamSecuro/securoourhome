@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Securio Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #004080;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .devices {
+            flex: 1;
+            background-color: #004080;
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .button {
+            background-color: transparent;
+            border: 2px solid #0000ff;
+            color: #0000ff;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background-color: #e0e0e0;
+        }
+        .alert {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .alert-icon {
+            background-color: #ffcc00;
+            border-radius: 50%;
+            padding: 10px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Securio</h1>
+        <span>History - last 1 minute</span>
+    </div>
+
+    <div class="container">
+        <div class="devices">
+            <h2>Devices</h2>
+            <i class="alert-icon">📱</i> <!-- Placeholder for an icon -->
+        </div>
+        <div class="menu">
+            <button class="button" id="armedButton">🕶️ Armed Mode</button>
+            <button class="button">👀 Friendly Mode</button>
+        </div>
+    </div>
+
+    <div class="alert">
+        <div class="alert-icon">⚠️</div>
+        <span>Total: 0</span>
+    </div>
+    <script>
+        // Select the button using its ID
+        const armedButton = document.getElementById('armedButton');
+
+        // Add an event listener for the click event
+        armedButton.addEventListener('click', function() {
+            // Display an alert when the button is clicked
+            alert("Armed Mode On");
+        });
+    </script>
+</body>
+</html>

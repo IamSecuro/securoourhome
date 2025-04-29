@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 0px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        #phone-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #state-select {
+            width: 48%;
+        }
+
+        #area-code {
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 50%;
+            padding: 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            display:inline-block;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .photo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .photo-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #camera-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .camera-box {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            border: 1px solid #040303;
+            border-radius: 10px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .camera-controls {
+           
+            bottom: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding-top:15px ;
+        }
+
+        .camera-controls button {
+            background-color: hwb(203 0% 0%);
+            color: white;
+            border: none;
+            padding: 10px;
+            justify-content: center;
+            display: flex;
+            align-items:center;
+
+        }
+
+        .camera-controls button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Register</h1>
+    <div class="form-container">
+        <form id="register-form">
+            <!-- Username -->
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <div class="error" id="username-error"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error" id="password-error"></div>
+            </div>
+
+            <!-- Phone Number with Country Select -->
+<div class="input-group" id="phone-container">
+    <label for="phone-number">Phone Number:</label>
+    <input type="tel" id="phone-number" name="phoneNumber" placeholder="Enter your phone number" required>
+    <select id="state-select" name="state" required>
+        <option value="">Select Country</option>
+        <option value="US">United States</option>
+        <option value="PH">Philippines</option>
+        <option value="IN">India</option>
+    </select>
+</div>
+<div id="area-code"></div>
+
+<script>
+    // Restrict phone number input to digits only
+    const phoneInput = document.getElementById('phone-number');
+    
+    phoneInput.addEventListener('input', function() {
+        // Remove non-numeric characters
+        this.value = this.value.replace(/\D/g, '');
+    });
+
+    // Country code lookup based on selected country
+    const areaCode = {
+        "US": "+1",
+        "PH": "+63",
+        "IN": "+91",
+    };
+
+    document.getElementById('state-select').addEventListener('change', function() {
+        const country = this.value;
+        const areaCode = areaCodes[country];
+        
+        if (areaCode) {
+            document.getElementById('area-code').textContent = `Area code: ${areaCode}`;
+        } else {
+            document.getElementById('area-code').textContent = '';
+        }
+    });
+</script>
+
+
+            <!-- Address -->
+            <div class="input-group">
+                <label for="address">Address (Purok/Street, Baranggay, City/Municipality, Province, Country, ZipCode):</label>
+                <input type="text" id="address" name="address" placeholder="Enter your full address" required>
+                <div class="error" id="address-error"></div>
+            </div>
+            
+            <!-- Photo Upload -->
+            <div class="input-group">
+                <label for="profile-photo">Upload/Capture 10 or more photos with Different Angles:</label>
+                <div id="camera-container">
+                    <div class="camera-box">
+                        <video id="video" autoplay></video>
+                    </div>
+                </div>
+                <div class="camera-controls">
+                    <button type="button" id="capture-photo">Capture Photo</button>
+                    <button type="button" id="upload-photo">Upload Photo</button>
+                </div>
+                <div id="photos-preview" style="display: flex; gap: 10px; flex-wrap: wrap; height:auto; padding-top: 25px;"></div>
+            </div>
+
+            <!-- Submit Button -->
+
+            <button style="width: 100%;">Next</button>
+
+        </form>
+    </div>
+
+    <script>
+        // Country code lookup based on selected country
+        const areaCodes = {
+            "US": "+1",
+            "PH": "+63",
+            "IN": "+91",
+        };
+
+        document.getElementById('state-select').addEventListener('change', function() {
+            const country = this.value;
+            const areaCode = areaCodes[country];
+            
+            if (areaCode) {
+                document.getElementById('area-code').textContent = `Area code: ${areaCode}`;
+            } else {
+                document.getElementById('area-code').textContent = '';
+            }
+        });
+
+        // Camera setup
+        
+        
+        const video = document.getElementById('video');
+        const capturePhotoBtn = document.getElementById('capture-photo');
+        const uploadPhotoBtn = document.getElementById('upload-photo');
+        const photosPreview = document.getElementById('photos-preview');
+        
+        let currentStream = null;
+
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    currentStream = stream;
+                })
+                .catch(err => {
+                    console.error("Error accessing camera: ", err);
+                    alert("Permission denied. Please allow access to the camera.");
+                });
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                const tracks = currentStream.getTracks();
+                tracks.forEach(track => track.stop());
+                video.srcObject = null;
+            }
+        }
+
+        capturePhotoBtn.addEventListener('click', function() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const photoDataUrl = canvas.toDataURL();
+            displayPhoto(photoDataUrl);
+        });
+
+        uploadPhotoBtn.addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const photoDataUrl = event.target.result;
+                    displayPhoto(photoDataUrl);
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        });
+
+        ///Capture Photo
+
+        function displayPhoto(photoDataUrl) {
+    const currentPhotos = photosPreview.querySelectorAll('.photo-container').length;
+
+    if (currentPhotos >= 20) {
+        alert('Maximum of photos have reached.');
+        return;
+    }
+
+    const photoContainer = document.createElement('div');
+    photoContainer.classList.add('photo-container');
+
+    const img = document.createElement('img');
+    img.src = photoDataUrl;
+
+    const removeBtn = document.createElement('span');
+    removeBtn.classList.add('remove-photo');
+    removeBtn.innerHTML = '&times;';
+    removeBtn.onclick = function() {
+        photosPreview.removeChild(photoContainer);
+        updateButtons(); // Enable buttons again if photo is removed
+    };
+
+    photoContainer.appendChild(img);
+    photoContainer.appendChild(removeBtn);
+    photosPreview.appendChild(photoContainer);
+
+    updateButtons(); // Check if buttons need to be disabled
+}
+
+function updateButtons() {
+    const totalPhotos = photosPreview.querySelectorAll('.photo-container').length;
+    const captureButton = document.getElementById('capture-photo');
+    const uploadButton = document.getElementById('upload-photo');
+
+    if (totalPhotos >= 10) {
+        captureButton.disabled = false;
+        uploadButton.disabled = false;
+    } else {
+        captureButton.disabled = false;
+    }
+}
+        // Validate form before submission
+       // Validate form before submission
+document.getElementById('register-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const phoneNumber = document.getElementById('phone-number').value;
+    const state = document.getElementById('state-select').value;
+    const address = document.getElementById('address').value;
+    const totalPhotos = photosPreview.querySelectorAll('.photo-container').length;
+
+    let isValid = true;
+
+    if (!username) {
+        isValid = false;
+        document.getElementById('username-error').textContent = 'Username is required.';
+    }
+
+    if (!password) {
+        isValid = false;
+        document.getElementById('password-error').textContent = 'Password is required.';
+    }
+
+    if (!phoneNumber) {
+        isValid = false;
+        document.getElementById('phone-number').style.borderColor = 'red';
+    }
+
+    if (!state) {
+        isValid = false;
+        document.getElementById('state-select').style.borderColor = 'red';
+    }
+
+    if (!address) {
+        isValid = false;
+        document.getElementById('address-error').textContent = 'Address is required.';
+    }
+
+    if (totalPhotos < 10) {
+        isValid = false;
+        alert('Please upload at least 10 photos.');
+    }
+
+    if (isValid) {
+        // Show review popup
+        const confirmationMessage = 
+            `Please review your information:\n\n` +
+            `Username: ${username}\n` +
+            `Phone Number: ${phoneNumber}\n` +
+            `Country: ${state}\n` +
+            `Address: ${address}\n` +
+            `Uploaded Photos: ${totalPhotos}\n\n` +
+            `Do you agree to share this data?`;
+
+        if (confirm(confirmationMessage)) {
+            alert('Thank you for agreeing! Form submitted successfully.');
+            // Proceed to next step or save data here
+            // window.location.href = 'home.html'; // Example redirect
+        } else {
+            alert('Submission canceled. Your data was not shared.');
+        }
+    } else {
+        alert('Please complete all fields.');
+    }
+});
+
+        // Initialize the camera when the page loads
+        window.onload = startCamera;
+
+        // Show the confirmation popup
+        function showConfirmationPopup() {
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            let phoneNumber = document.getElementById('phone-number').value;
+            let address = document.getElementById('address').value;
+
+            let confirmationText = `
+                <strong>Username:</strong> ${username} <br>
+                <strong>Password:</strong> ${password} <br>
+                <strong>Phone Number:</strong> ${phoneNumber} <br>
+                <strong>Address:</strong> ${address} <br>
+            `;
+            
+            document.getElementById('confirmation-info').innerHTML = confirmationText;
+            document.getElementById('confirmation-popup').style.display = 'flex';
+        }
+
+        // Close the confirmation popup
+        function closePopup() {
+            document.getElementById('confirmation-popup').style.display = 'none';
+        }
+
+        // Submit the form
+        function submitForm() {
+            alert("Information submitted successfully!");
+            // Here you can submit the form data or send it to the server.
+            // For example, you can use an AJAX request to submit the form.
+            document.getElementById('register-form').submit();
+        }
+        
+    </script>
+  
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"].error, input[type="password"].error, textarea.error {
+            border: 1px solid red;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .small-text {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .image-container {
+            margin-top: 10px;
+        }
+
+        .image-container img {
+            max-width: 200px;
+            margin: 5px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .file-buttons button {
+            width: 48%;
+        }
+
+        .file-buttons button:hover {
+            background-color: #3e8e41;
+        }
+
+        /* Popup style */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .popup button {
+            margin-top: 20px;
+            background-color: #4CAF50;
+        }
+
+        .popup button.cancel {
+            background-color: #f44336;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Register</h1>
+    <form id="register-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="phone-number">Phone Number:</label>
+        <input type="text" id="phone-number" name="phone-number" required><br><br>
+
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="4" required></textarea><br><br>
+
+        <small class="small-text">Enter your complete address in the following format:</small><br>
+        <small class="small-text">Purok/Street, Barangay, City/Municipality, Province, Zipcode</small><br><br>
+
+        <!-- Image upload options -->
+        <label for="upload-image">Upload a photo:</label><br>
+
+        <div class="file-buttons">
+            <button type="button" onclick="chooseFile()">Choose File</button>
+            <button type="button" onclick="takePicture()">Take a Picture</button>
+        </div>
+
+        <div id="image-container" class="image-container"></div><br><br>
+
+        <button type="button" onclick="showConfirmationPopup()">Next</button>
+
+        <div id="error-message" class="error-message"></div>
+    </form>
+
+    <!-- Popup -->
+    <div id="confirmation-popup" class="popup">
+        <div class="popup-content">
+            <h2>Confirm Your Information</h2>
+            <p>Please review your information below:</p>
+            <div id="confirmation-info"></div><br>
+            <p>By clicking "Agree", you confirm that the information provided is correct and agree to our privacy policy.</p>
+            <button onclick="submitForm()">Agree</button>
+            <button class="cancel" onclick="closePopup()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to open file input dialog
+        function chooseFile() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*'; // Accept only image files
+
+            input.onchange = function(event) {
+                let file = event.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Create an image element and display the chosen file
+                        let img = document.createElement('img');
+                        img.src = e.target.result;
+                        document.getElementById('image-container').appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click(); // Trigger the file input
+        }
+
+        // Function to open camera and take a picture
+        function takePicture() {
+            // Ask for camera permission
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    let video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+
+                    let canvas = document.createElement('canvas');
+                    let context = canvas.getContext('2d');
+                    document.body.appendChild(video);
+
+                    video.onloadedmetadata = function() {
+                        // When video is loaded, start taking the picture
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                    };
+
+                    // Button to take the picture
+                    let captureButton = document.createElement('button');
+                    captureButton.innerText = 'Capture Photo';
+                    document.body.appendChild(captureButton);
+
+                    captureButton.onclick = function() {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        let dataUrl = canvas.toDataURL();
+
+                        // Display the captured image
+                        let img = document.createElement('img');
+                        img.src = dataUrl;
+                        document.getElementById('image-container').appendChild(img);
+
+                        // Stop the video stream after capturing
+                        stream.getTracks().forEach(track => track.stop());
+                        captureButton.disabled = true; // Disable the capture button after taking a photo
+                    };
+                })
+                .catch(function(error) {
+                    alert("Permission denied. Please allow access to the camera.");
+                });
+        }
+
+        // Function to check if the fields are complete
+        function validateForm() {
+            let isValid = true;
+            let errorMessage = "";
+
+            let fields = ["username", "password", "phone-number", "address"];
+            fields.forEach(function(field) {
+                let input = document.getElementById(field);
+                if (input.value.trim() === "") {
+                    input.classList.add("error");
+                    isValid = false;
+                    errorMessage = "Please complete all the fields.";
+                } else {
+                    input.classList.remove("error");
+                }
+            });
+
+            if (!isValid) {
+                document.getElementById('error-message').innerText = errorMessage;
+            } else {
+                document.getElementById('error-message').innerText = "";
+            }
+
+            return isValid;
+        }
+
+        // Show the confirmation popup
+        function showConfirmationPopup() {
+            if (validateForm()) {
+                let username = document.getElementById('username').value;
+                let password = document.getElementById('password').value;
+                let phoneNumber = document.getElementById('phone-number').value;
+                let address = document.getElementById('address').value;
+
+                let confirmationText = `
+                    <strong>Username:</strong> ${username} <br>
+                    <strong>Password:</strong> ${password} <br>
+                    <strong>Phone Number:</strong> ${phoneNumber} <br>
+                    <strong>Address:</strong> ${address} <br>
+                `;
+                
+                document.getElementById('confirmation-info').innerHTML = confirmationText;
+                document.getElementById('confirmation-popup').style.display = 'flex';
+            }
+        }
+
+        // Close the confirmation popup
+        function closePopup() {
+            document.getElementById('confirmation-popup').style.display = 'none';
+        }
+
+        // Submit the form
+        function submitForm() {
+            alert("Information submitted successfully!");
+            // Here you can submit the form data or send it to the server.
+            // For example, you can use an AJAX request to submit the form.
+            document.getElementById('register-form').submit();
+        }
+    </script>
+
+</body>
+</html>
